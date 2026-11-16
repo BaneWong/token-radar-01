@@ -1,0 +1,122 @@
+{
+  "generatedAt": "2026-11-16T08:22:44.619Z",
+  "rowCount": 2048,
+  "methodology": "Implied FDV = TVL × category-specific multiple. Multiple based on comparable token launch FDV/TVL ratios from recent launches. Probability via sigmoid on log(TVL) with category boost.",
+  "dataSources": [
+    "DefiLlama API (api.llama.fi/protocols)"
+  ],
+  "excludedCategories": [
+    "CEX",
+    "Liquid Staking",
+    "Restaking",
+    "Liquid Restaking",
+    "Restaked BTC",
+    "Canonical Bridge",
+    "Bridge",
+    "Stablecoin Wrapper",
+    "Dual-Token Stablecoin",
+    "Anchor BTC",
+    "NFT Marketplace",
+    "NFT Lending",
+    "NFT Automated Strategies",
+    "NftFi",
+    "Gaming",
+    "Luck Games",
+    "Gamified Mining",
+    "Ponzi",
+    "Physical TCG",
+    "Charity Fundraising"
+  ],
+  "comparableComps": [
+    {
+      "category": "Dexs",
+      "medianTVL": 1,
+      "medianFDV": 1.5,
+      "sampleSize": 615
+    },
+    {
+      "category": "Lending",
+      "medianTVL": 1,
+      "medianFDV": 1.2,
+      "sampleSize": 205
+    },
+    {
+      "category": "Yield",
+      "medianTVL": 1,
+      "medianFDV": 0.8,
+      "sampleSize": 186
+    },
+    {
+      "category": "Derivatives",
+      "medianTVL": 1,
+      "medianFDV": 1,
+      "sampleSize": 120
+    },
+    {
+      "category": "Launchpad",
+      "medianTVL": 0,
+      "medianFDV": 0.5,
+      "sampleSize": 107
+    },
+    {
+      "category": "Yield Aggregator",
+      "medianTVL": 1,
+      "medianFDV": 0.6,
+      "sampleSize": 83
+    },
+    {
+      "category": "Risk Curators",
+      "medianTVL": 0,
+      "medianFDV": 0.3,
+      "sampleSize": 76
+    },
+    {
+      "category": "CDP",
+      "medianTVL": 1,
+      "medianFDV": 0.8,
+      "sampleSize": 71
+    },
+    {
+      "category": "Farm",
+      "medianTVL": 0,
+      "medianFDV": 0.3,
+      "sampleSize": 67
+    },
+    {
+      "category": "Prediction Market",
+      "medianTVL": 0,
+      "medianFDV": 0.5,
+      "sampleSize": 56
+    },
+    {
+      "category": "RWA",
+      "medianTVL": 1,
+      "medianFDV": 0.7,
+      "sampleSize": 54
+    },
+    {
+      "category": "SoFi",
+      "medianTVL": 0,
+      "medianFDV": 0.3,
+      "sampleSize": 41
+    },
+    {
+      "category": "Onchain Capital Allocator",
+      "medianTVL": 1,
+      "medianFDV": 0.6,
+      "sampleSize": 32
+    },
+    {
+      "category": "Liquidity Manager",
+      "medianTVL": 0,
+      "medianFDV": 0.5,
+      "sampleSize": 31
+    },
+    {
+      "category": "Indexes",
+      "medianTVL": 0,
+      "medianFDV": 0.3,
+      "sampleSize": 27
+    }
+  ]
+}

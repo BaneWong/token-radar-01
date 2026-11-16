@@ -113,7 +113,7 @@ tr:hover { background: #1a1f25; cursor: pointer; }
 .drawer {
   position: fixed; top: 0; right: 0; bottom: 0; width: 480px;
   background: var(--surface); border-left: 1px solid var(--line);
-  z-index: 11; transform: translateX(100%); transition: transform .25s;
+  z-index: 11; transform: translateX(100%); transition: transform .24s ease;
   overflow-y: auto; padding: 24px;
 }
 .drawer.open { transform: translateX(0); }
@@ -150,13 +150,18 @@ tr:hover { background: #1a1f25; cursor: pointer; }
     <span class="kpi-value" id="kpi-watchlist">—</span>
   </div>
   <div class="kpi-item">
-    <span class="kpi-label">Median Implied FDV</span>
+    <span class="kpi-label">Median Implied FDV (TVL≥$10M)</span>
     <span class="kpi-value accent" id="kpi-fdv">—</span>
   </div>
   <div class="kpi-item">
-    <span class="kpi-label">High Conviction</span>
+    <span class="kpi-label">High Conviction (p≥0.7)</span>
     <span class="kpi-value" id="kpi-conviction">—</span>
   </div>
+</div>
+
+<!-- Summary line -->
+<div style="padding:8px 24px;font-size:12px;color:var(--muted);border-bottom:1px solid var(--line);background:var(--surface)">
+  <span id="summary-text"></span>
 </div>
 
 <!-- Filter Bar -->
@@ -177,6 +182,8 @@ tr:hover { background: #1a1f25; cursor: pointer; }
     <option value="tvl">TVL ↓</option>
     <option value="prob">概率 ↓</option>
   </select>
+  <button id="btn-actionable" style="background:var(--accent);color:#0B0D10;border:none;border-radius:4px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">只看可行动样本 (TVL≥$10M)</button>
+  <button id="btn-reset" style="background:transparent;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:6px 12px;font-size:12px;cursor:pointer;font-family:inherit">重置</button>
   <span class="filter-count" id="filter-count">—</span>
 </div>
 
@@ -20706,15 +20713,20 @@ function actionClass(a) { return a === '建仓' ? 'text-pos' : a === '回避' ? 
 
 // ── Render ────────────────────────────────────────────────────
 function render() {
-  // KPIs
+  // KPIs — meaningful sample: TVL ≥ $10M
+  const MIN_TVl = 10e6;
+  const actionable = BOARD_DATA.filter(r => r.tvl >= MIN_TVl);
   const watchlist = BOARD_DATA.length;
-  const sorted = [...BOARD_DATA].sort((a,b) => a.impliedFDV - b.impliedFDV);
+  const actionableCount = actionable.length;
+  const sorted = [...actionable].sort((a,b) => a.impliedFDV - b.impliedFDV);
   const medianFDV = sorted[Math.floor(sorted.length/2)].impliedFDV;
-  const highConv = BOARD_DATA.filter(r => r.probability >= 0.6).length;
+  const highConv = actionable.filter(r => r.probability >= 0.7).length;
 
   document.getElementById('kpi-watchlist').textContent = watchlist;
   document.getElementById('kpi-fdv').textContent = fmtUSD(medianFDV);
   document.getElementById('kpi-conviction').textContent = highConv;
+  document.getElementById('summary-text').textContent =
+    `${watchlist} 个 pre-token 协议；TVL≥$10M 的 ${actionableCount} 个为可行动样本`;
 
   // Filter
   const cat = document.getElementById('filter-cat').value;
@@ -20724,6 +20736,7 @@ function render() {
   filteredData = BOARD_DATA.filter(r => {
     if (cat && r.category !== cat) return false;
     if (r.probability < prob) return false;
+    if (window._filterActionable && r.tvl < 10e6) return false;
     return true;
   });
 
@@ -20838,6 +20851,24 @@ if (params.has('s')) document.getElementById('filter-sort').value = params.get('
 catSelect.addEventListener('change', render);
 document.getElementById('filter-prob').addEventListener('change', render);
 document.getElementById('filter-sort').addEventListener('change', render);
+
+// Quick buttons
+document.getElementById('btn-actionable').addEventListener('click', () => {
+  document.getElementById('filter-prob').value = '0';
+  document.getElementById('filter-cat').value = '';
+  document.getElementById('filter-sort').value = 'fdv';
+  // Apply TVL filter by temporarily modifying the filter function
+  window._filterActionable = true;
+  render();
+});
+document.getElementById('btn-reset').addEventListener('click', () => {
+  document.getElementById('filter-prob').value = '0';
+  document.getElementById('filter-cat').value = '';
+  document.getElementById('filter-sort').value = 'fdv';
+  window._filterActionable = false;
+  location.hash = '';
+  render();
+});
 
 render();
 </script>

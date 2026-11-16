@@ -271,16 +271,19 @@ async function main(): Promise<void> {
   writeFileSync(join(OUT_DIR, "board.json"), JSON.stringify(board, null, 2));
   writeFileSync(join(OUT_DIR, "dossier.json"), JSON.stringify(dossier, null, 2));
 
-  // KPIs
+  // KPIs — meaningful sample: TVL ≥ $10M (n=108)
+  const MIN_TVl = 10e6;
+  const actionable = board.filter(r => r.tvl >= MIN_TVl);
   const kpiWatchlist = board.length;
-  const medianFDV = [...board].sort((a, b) => a.impliedFDV - b.impliedFDV)
-    [Math.floor(board.length / 2)].impliedFDV;
-  const highConviction = board.filter(r => r.probability >= 0.6).length;
+  const actionableCount = actionable.length;
+  const medianFDV = [...actionable].sort((a, b) => a.impliedFDV - b.impliedFDV)
+    [Math.floor(actionable.length / 2)].impliedFDV;
+  const highConviction = actionable.filter(r => r.probability >= 0.7).length;
 
-  console.log(`\nKPIs:`);
-  console.log(`  Watchlist: ${kpiWatchlist} protocols`);
+  console.log(`\nKPIs (actionable sample TVL≥$10M, n=${actionableCount}):`);
+  console.log(`  Watchlist: ${kpiWatchlist} protocols total`);
   console.log(`  Median implied FDV: ${formatUSD(medianFDV)}`);
-  console.log(`  High conviction: ${highConviction}`);
+  console.log(`  High conviction (p≥0.7): ${highConviction}`);
   console.log(`\nOutputs: ${OUT_DIR}/board.json, ${OUT_DIR}/dossier.json`);
   process.exit(0);
 }
